@@ -37,7 +37,7 @@ class EAsciiDoc(Exception):
     pass
 
 
-from UserDict import UserDict
+from collections import UserDict
 
 class OrderedDict(UserDict):
     '''Python Cookbook: Ordered Dictionary, Submitter: David Benjamin'''
