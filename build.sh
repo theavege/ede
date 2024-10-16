@@ -17,7 +17,7 @@ function main
     if [[ ${RUNNER_OS} == "Linux" ]]; then
         git submodule update --init --recursive
         sudo apt-get update
-        sudo apt-get install --yes --no-install-recommends build-essential auto{conf,tools-dev} python2 curl xorg fltk1.3-dev jam libdbus-1-dev
+        sudo apt-get install --yes --no-install-recommends build-essential auto{conf,tools-dev} curl xorg fltk1.3-dev jam libdbus-1-dev
         export PYTHON=$(which python2)
         for item in "edelib" "."; do
             pushd "${item}" || return 1
