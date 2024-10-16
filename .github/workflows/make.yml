@@ -54,7 +54,7 @@ jobs:
                 bash autogen.sh
                 bash configure
                 jam
-                # sudo jam install
+                sudo jam install
                 popd
             done;
         fi > /dev/null
