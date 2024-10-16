@@ -3570,7 +3570,7 @@ class Config:
     def load_miscellaneous(self,d):
         '''Set miscellaneous configuration entries from dictionary 'd'.'''
         def set_misc(name,rule='True',intval=False):
-            if d.has_key(name):
+            if name in d:
                 errmsg = 'illegal [miscellaneous] %s entry' % name
                 if intval:
                     setattr(self, name, int(validate(d[name],rule,errmsg)))
