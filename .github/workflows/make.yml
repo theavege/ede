@@ -45,11 +45,12 @@ jobs:
         }
         export -f log
         if [[ ${RUNNER_OS} == "Linux" ]]; then
+            git submodule update --init --recursive
             sudo apt-get update
             sudo apt-get install -y xorg dbus-*dev fluid jam
             for item in "edelib" "."; do
-                log 'info' "Build ${PWD}"
                 pushd "${item}" || return 1
+                log 'info' "Build ${PWD}"
                 bash autogen.sh
                 bash configure
                 jam
