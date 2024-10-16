@@ -271,7 +271,7 @@ def parse_attributes(attrs,dict):
     def f(*args,**keywords):
         # Name and add aguments '1','2'... to keywords.
         for i in range(len(args)):
-            if not keywords.has_key(str(i+1)):
+            if not (str(i+1) in keywords):
                 keywords[str(i+1)] = args[i]
         return keywords
 
@@ -572,7 +572,7 @@ def filter_lines(filter,lines,dict={}):
         if found:
             cmd = cmd2
     else:
-        if os.__dict__.has_key('uname') and os.uname()[0][:6] == 'CYGWIN':
+        if 'uname' in os.__dict__ and os.uname()[0][:6] == 'CYGWIN':
             # popen2() does not like non-drive letter path names under
             # Cygwin.
             s = syseval('cygpath -m ' + cmd).strip()
@@ -1324,7 +1324,7 @@ class Header:
                     if date:
                         attrs['date'] = config.subs_specialchars(date)
             AttributeEntry.translate_all()
-        if document.backend == 'linuxdoc' and not attrs.has_key('author'):
+        if document.backend == 'linuxdoc' and not 'author' in attrs:
             warning('linuxdoc requires author name')
         if document.doctype == 'manpage':
             # Translate mandatory NAME section.
@@ -1394,7 +1394,7 @@ class AttributeEntry:
         attr = AttributeEntry   # Alias for brevity.
         reader.read()   # Discard attribute from reader.
         # Don't override command-line attributes.
-        if config.cmd_attrs.has_key(attr.name):
+        if attr.name in config.cmd_attrs:
             return
         # Update document.attributes from previously parsed attribute.
         if attr.value:
@@ -1405,7 +1405,7 @@ class AttributeEntry:
             # Some document Header attributes get special treatment.
             if attr.name == 'author':
                 document.parse_author(attr.value)
-        elif document.attributes.has_key(attr.name):
+        elif attr.name in document.attributes:
             del document.attributes[attr.name]
     translate = staticmethod(translate)
     def translate_all():
@@ -1424,7 +1424,7 @@ class AttributeList:
     def isnext():
         result = False  # Assume not next.
         if not AttributeList.pattern:
-            if not document.attributes.has_key('attributelist-pattern'):
+            if not 'attributelist-pattern' in document.attributes:
                 error("[attributes] missing 'attributelist-pattern' entry")
             AttributeList.pattern = document.attributes['attributelist-pattern']
         line = reader.read_next()
@@ -1535,7 +1535,7 @@ class Title:
         result = False
         for level in range(len(Title.underlines)):
             k = 'sect%s' % level
-            if Title.dump_dict.has_key(k):
+            if k in Title.dump_dict:
                 mo = re.match(Title.dump_dict[k], lines[0])
                 if mo:
                     Title.dict = mo.groupdict()
@@ -1569,7 +1569,7 @@ class Title:
                 result = True
         # Check for expected pattern match groups.
         if result:
-            if not Title.dict.has_key('title'):
+            if not 'title' in Title.dict.has_key():
                 warning('[titles] entry has no <title> group')
                 Title.dict['title'] = lines[0]
             for k,v in Title.dict.items():
