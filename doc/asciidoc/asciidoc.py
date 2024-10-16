@@ -6,7 +6,7 @@ Copyright (C) 2002-2007 Stuart Rackham. Free use of this software is granted
 under the terms of the GNU General Public License (GPL).
 '''
 
-import sys, os, re, string, time, traceback, tempfile, popen2, codecs, locale
+import sys, os, re, string, time, traceback, tempfile, subprocess, codecs, locale
 from types import *
 
 VERSION = '8.2.1'   # See CHANGLOG file for version history.
@@ -620,7 +620,7 @@ def filter_lines(filter,lines,dict={}):
         try:
             import select
             result = []
-            r,w = popen2.popen2(filter)
+            r,w = subprocess.Popen(filter)
             # Polled I/O loop to alleviate full buffer deadlocks.
             i = 0
             while i < len(lines):
