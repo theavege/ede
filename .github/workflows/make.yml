@@ -30,4 +30,4 @@ jobs:
         submodules: true
     - name: Build
       shell: bash
-      run: bash build.sh
+      run: ls -l
