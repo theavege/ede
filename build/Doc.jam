@@ -8,8 +8,7 @@
 # GNU General Public License version 2 or newer.
 # See COPYING for details.
 
-#ASCIIDOC  = "$(TOP)/doc/asciidoc/asciidoc.py" ;
-ASCIIDOC  = /usr/bin/asciidoc
+ASCIIDOC  = "$(TOP)/doc/asciidoc/asciidoc.py" ;
 DOCDIR    = "$(TOP)/doc" ;
 MANUALDIR = "$(DOCDIR)/manual" ;
 

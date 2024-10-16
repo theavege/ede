@@ -17,12 +17,12 @@ function main
     if [[ ${RUNNER_OS} == "Linux" ]]; then
         git submodule update --init --recursive
         sudo apt-get update
-        sudo apt-get install -y asciidoc xorg fltk1.3-dev jam libdbus-1-dev
+        sudo apt-get install -y python2 curl xorg fltk1.3-dev jam libdbus-1-dev
         for item in "edelib" "."; do
             pushd "${item}" || return 1
             log 'info' "Build ${PWD}"
             bash autogen.sh
-            bash configure
+            bash configure CXX="gcc -std=c11"
             jam
             sudo jam install
             popd
