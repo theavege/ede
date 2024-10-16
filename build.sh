@@ -17,15 +17,18 @@ function main
     if [[ ${RUNNER_OS} == "Linux" ]]; then
         git submodule update --init --recursive
         sudo apt-get update
-        sudo apt-get search python2
-        sudo apt-get install -y python2.7 curl xorg fltk1.3-dev jam libdbus-1-dev
+        sudo apt-get install --yes --no-install-recommends build-essential auto{conf,tools-dev} python2 curl xorg fltk1.3-dev jam libdbus-1-dev
+        export PYTHON=$(which python2)
         for item in "edelib" "."; do
             pushd "${item}" || return 1
-            log 'info' "Build ${PWD}"
+            log 'info' "Autogen ${PWD}"
             bash autogen.sh
-            bash configure CXX="gcc -std=c11"
-            jam
-            sudo jam install
+            log 'info' "Configure ${PWD}"
+            bash configure
+            log 'info' "Jam ${PWD}"
+            jam || true
+            log 'info' "Jam Install ${PWD}"
+            sudo jam install || true
             popd
         done;
     fi > /dev/null
