@@ -3985,7 +3985,7 @@ def asciidoc(backend, doctype, confiles, infile, outfile, options):
                 reader.closefile()  # Keep reader state for postmortem.
     except (KeyboardInterrupt, SystemExit):
         print
-    except Exception(e):
+    except Exception as e:
         # Cleanup.
         if outfile and outfile != '<stdout>' and os.path.isfile(outfile):
             os.unlink(outfile)
