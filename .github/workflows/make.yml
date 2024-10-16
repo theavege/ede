@@ -46,9 +46,9 @@ jobs:
         export -f log
         if [[ ${RUNNER_OS} == "Linux" ]]; then
             sudo apt-get update
-            sudo apt-get install -y dbus-*dev fluid jam
-            for item in "edelib" "ede"; do
-                log 'info' "Build ${item}"
+            sudo apt-get install -y xorg dbus-*dev fluid jam
+            for item in "edelib" "."; do
+                log 'info' "Build ${PWD}"
                 pushd "${item}" || return 1
                 bash autogen.sh
                 bash configure
