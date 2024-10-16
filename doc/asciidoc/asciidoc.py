@@ -177,7 +177,7 @@ def assign(dst,src):
 
 def strip_quotes(s):
     '''Trim white space and, if necessary, quote characters from s.'''
-    s = string.strip(s)
+    s = s.strip()
     # Strip quotation mark characters from quoted strings.
     if len(s) >= 3 and s[0] == '"' and s[-1] == '"':
         s = s[1:-1]
@@ -287,7 +287,7 @@ def parse_attributes(attrs,dict):
         # Try quoting the attrs.
         s = string.replace(s,'"',r'\"') # Escape double-quotes.
         s = string.split(s,',')
-        s = map(lambda x: '"'+string.strip(x)+'"',s)
+        s = map(lambda x: '"'+x.strip()+'"',s)
         s = string.join(s,',')
         try:
             d = eval('f('+s+')')
@@ -446,9 +446,9 @@ def parse_entry(entry, dict=None, unquote=False, unique_values=False,
         if value is not None:
             value = strip_quotes(value)
     else:
-        name = string.strip(name)
+        name = name.strip()
         if value is not None:
-            value = string.strip(value)
+            value = value.strip()
     if not name:
         return None
     if dict is not None:
@@ -501,9 +501,9 @@ def dump_section(name,dict,f=sys.stdout):
     for k,v in dict.items():
         k = str(k)
         # Quote if necessary.
-        if len(k) != len(string.strip(k)):
+        if len(k) != len(k.strip()):
             k = '"'+k+'"'
-        if v and len(v) != len(string.strip(v)):
+        if v and len(v) != len(v.strip()):
             v = '"'+v+'"'
         if v is None:
             # Don't dump undefined attributes.
@@ -575,7 +575,7 @@ def filter_lines(filter,lines,dict={}):
         if os.__dict__.has_key('uname') and os.uname()[0][:6] == 'CYGWIN':
             # popen2() does not like non-drive letter path names under
             # Cygwin.
-            s = string.strip(syseval('cygpath -m ' + cmd))
+            s = syseval('cygpath -m ' + cmd).strip()
             if s:
                 cmd = s
         if os.path.isfile(cmd):
@@ -1240,7 +1240,7 @@ class Document:
         s = subs_attrs(s)
         if not s:   # An undefined attribute has dropped the author line.
             return
-        s = string.strip(s)
+        s = s.strip()
         mo = re.match(r'^(?P<name1>[^<>\s]+)'
                 '(\s+(?P<name2>[^<>\s]+))?'
                 '(\s+(?P<name3>[^<>\s]+))?'
@@ -1343,8 +1343,8 @@ class Header:
                 mo = re.match(r'^(?P<manname>.*?)\s+-\s+(?P<manpurpose>.*)$',s)
                 if not mo:
                     error('malformed NAME section body')
-                attrs['manname'] = string.strip(mo.group('manname'))
-                attrs['manpurpose'] = string.strip(mo.group('manpurpose'))
+                attrs['manname'] = mo.group('manname').strip()
+                attrs['manpurpose'] = mo.group('manpurpose').strip()
         if attrs.get('author',None) or attrs.get('email',None):
             attrs['authored'] = ''
     translate = staticmethod(translate)
@@ -1629,9 +1629,9 @@ class Title:
             if mo:
                 title = mo.groupdict().get('title')
                 if title is not None:
-                    Title.dict['title'] = string.strip(title)
+                    Title.dict['title'] = title.strip()
                 else:
-                    Title.dict['title'] = string.strip(mo.group())
+                    Title.dict['title'] = mo.group().strip()
                 Title.sectname = sect
                 break
         else:
@@ -2628,9 +2628,9 @@ class Table(AbstractBlock):
                     # Text in last column can continue forever.
                     # Use the encoded string to slice, but convert back
                     # to plain string before further processing
-                    data.append(string.strip(char_encode(row[start:])))
+                    data.append(char_encode(row[start:]).strip())
                 else:
-                    data.append(string.strip(char_encode(row[start:end])))
+                    data.append(char_encode(row[start:end]).strip())
                 start = end
             result.append(data)
         return result
@@ -3361,7 +3361,7 @@ class Writer:
         if self.fname != '<stdout>':
             self.f.close()
     def write_line(self, line=None):
-        if not (self.skip_blank_lines and (not line or not string.strip(line))):
+        if not (self.skip_blank_lines and (not line or not line.strip())):
             if line is not None:
                 self.f.write(line + self.newline)
             else:
