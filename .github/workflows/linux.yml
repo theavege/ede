@@ -1,0 +1,102 @@
+name: Linux
+
+on:
+  push:
+    branches: [master, main, add/action]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: linux-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  jam:
+    name: Ubuntu 24.04 (system Jam)
+    runs-on: ubuntu-24.04
+    env:
+      PREFIX: ${{ github.workspace }}/.prefix
+
+    steps:
+      - name: Checkout EDE and edelib
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build dependencies
+        run: |
+          set -euxo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            autoconf \
+            build-essential \
+            gettext \
+            pkg-config \
+            jam \
+            libfltk1.3-dev \
+            libx11-dev \
+            libxext-dev \
+            libxft-dev \
+            libxinerama-dev \
+            libxrender-dev \
+            libxrandr-dev \
+            libxcomposite-dev \
+            libxdamage-dev \
+            libxfixes-dev \
+            libxpm-dev \
+            libxkbfile-dev \
+            libpng-dev \
+            libjpeg-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libdbus-1-dev \
+            libstartup-notification0-dev \
+            libcurl4-openssl-dev
+          command -v jam
+          jam -v
+          if jam -v 2>&1 | grep -Eiq 'boost|Boost\.Jam'; then
+            echo "Boost Jam cannot build EDE. Install the Perforce 'jam' package, not b2."
+            exit 1
+          fi
+          printf 'Echo $(JAMVERSION) ;\n' > /tmp/conftest.jam
+          jam_version_orig=$(jam -f /tmp/conftest.jam | head -1)
+          jam_version=$(printf '%s' "$jam_version_orig" | tr -d '.')
+          echo "JAMVERSION=$jam_version_orig (numeric $jam_version)"
+          case "$jam_version" in
+            ''|*[!0-9]*)
+              echo "configure requires a numeric Jam version (vanilla Jam or FTJam). Got: $jam_version_orig"
+              exit 1
+              ;;
+          esac
+          if [ "$jam_version" -lt 23 ]; then
+            echo "Jam $jam_version_orig is older than 2.3"
+            exit 1
+          fi
+          fltk-config --version
+
+      - name: Build, test, and install edelib
+        working-directory: external/edelib
+        run: |
+          set -euxo pipefail
+          ./autogen.sh
+          ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
+          jam -j"$(nproc)"
+          # `jam tests` does `cd tests` for the default static build, but the
+          # directory is `test/`. Run the driver directly.
+          ( cd test && ./run-all.sh )
+          jam install
+          test -f "${PREFIX}/lib/pkgconfig/edelib.pc"
+          test -f "${PREFIX}/lib/pkgconfig/edelib-gui.pc"
+
+      - name: Configure and build EDE
+        run: |
+          set -euxo pipefail
+          export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+          ./autogen.sh
+          ./configure --prefix="${PREFIX}" --enable-debug --with-edelib-path="${PREFIX}"
+          # Doc rules call asciidoc whenever PYTHON is set. This job checks
+          # that the desktop compiles; it does not install asciidoc.
+          sed -i 's/^PYTHON.*/PYTHON = ;/' Jamconfig
+          jam -j"$(nproc)"
+          jam install
+          find "${PREFIX}/bin" -maxdepth 1 -type f -printf '%f\n' | sort
