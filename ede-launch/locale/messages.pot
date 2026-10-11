@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 09:53+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ede-launch/ede-launch.cpp:362
+#, c-format
+msgid ""
+"Program '%s' not found.\n"
+"\n"
+"Please check if given path to the executable was correct or adjust $PATH "
+"environment variable to point to the directory where target executable exists"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:372
+#, c-format
+msgid "You are trying to execute '%s', but it is not executable file"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:374
+#, c-format
+msgid "You do not have enough permissions to execute '%s'"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:400
+#, c-format
+msgid "Unable to load .desktop file '%s'. Got: %s"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:405
+msgid ""
+"Starting other types of .desktop files except 'Application' is not supported "
+"now"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:418 ede-launch/ede-launch.cpp:623
+#, c-format
+msgid "Unable to change directory to '%s'. Got '%s' (%i)"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:423
+#, c-format
+msgid ""
+"Unable to run '%s'.\n"
+"Probably the file is malformed or 'Exec' key has program which is not "
+"installed"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:514
+msgid "Run Command"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:519
+msgid "Enter the name of the application you would like to run"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:522
+msgid "Open:"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:531
+msgid "Run in terminal"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:534
+msgid "&OK"
+msgstr ""
+
+#: ede-launch/ede-launch.cpp:536
+msgid "&Cancel"
+msgstr ""
