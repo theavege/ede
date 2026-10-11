@@ -23,5 +23,58 @@ jobs:
         with:
           submodules: recursive
 
+      # Cache the downloaded .deb files (apt's archive dir), keyed on the
+      # dependency list in linux.sh. On a hit, 'apt-get install' inside
+      # linux.sh copies packages straight out of /var/cache/apt/archives
+      # instead of downloading them again. We do NOT cache /var/lib/apt
+      # /lists: restoring stale package indices without running
+      # 'apt-get update' breaks installs when upstream versions move, and
+      # linux.sh still runs a cheap metadata-only update every time.
+      - name: Cache apt archives
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-archives-${{ runner.os }}-${{ hashFiles('.github/workflows/linux.sh') }}
+          restore-keys: |
+            apt-archives-${{ runner.os }}-
+
+      # Cache of the edelib build: object files, static libs, autotools
+      # generated/configure state, and the installed ${PREFIX} tree. Keyed
+      # on the exact edelib submodule commit plus linux.sh (changing build
+      # flags must invalidate it). Restoring .prefix also restores the
+      # edelib*.pc files, so on a full hit EDE's configure can find the
+      # library without rebuilding edelib at all. Jam writes its per-target
+      # dependency cache into 'bin.*' directories next to each source dir;
+      # without those, Jam would recompile everything even if the .o files
+      # are present. The glob is expanded by the runner shell when saving.
+      - name: Cache edelib build outputs
+        id: edelib-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .prefix
+            external/edelib/bin.*
+            external/edelib/lib/*.o
+            external/edelib/lib/*.a
+            external/edelib/edelib/*.o
+            external/edelib/fl/*.o
+            external/edelib/sslib/*.o
+            external/edelib/tools/**/*.o
+            external/edelib/test/**/*.o
+            external/edelib/examples/**/*
+            external/edelib/config.h
+            external/edelib/config.status
+            external/edelib/config.log
+            external/edelib/Makefile
+            external/edelib/Makefile.in
+            external/edelib/aclocal.m4
+            external/edelib/configure
+            external/edelib/config.h.in
+            external/edelib/autom4te.cache
+            external/edelib/pc/*.pc
+          key: edelib-${{ runner.os }}-${{ hashFiles('external/edelib', '.github/workflows/linux.sh') }}
+          restore-keys: |
+            edelib-${{ runner.os }}-
+
       - name: Build with system Jam
         run: bash .github/workflows/linux.sh

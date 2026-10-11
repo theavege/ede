@@ -1,0 +1,178 @@
+/* config.h.in.  Generated from configure.in by autoheader.  */
+
+/* Build info for pekwm, do not touch */
+#undef EXTRA_VERSION_INFO
+
+/* Build info for pekwm, do not touch */
+#undef FEATURES
+
+/* Define to 1 if you have asprintf() */
+#undef HAVE_ASPRINTF
+
+/* Define to 1 if you have Xcomposite extension */
+#undef HAVE_COMPOSITE
+
+/* Define to 1 if you have curl library */
+#undef HAVE_CURL
+
+/* Define to 1 if you have curl/types.h file */
+#undef HAVE_CURLTYPES_H
+
+/* Define to 1 if you have the <ext/slist> header file. */
+#undef HAVE_EXT_SLIST
+
+/* Define to 1 if you have gettimeofday() */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define to 1 if you have gmtime_r() */
+#undef HAVE_GMTIME_R
+
+/* Define to 1 if you have HAL libraries */
+#undef HAVE_HAL
+
+/* Define to 1 if you the iconvctl call */
+#undef HAVE_ICONVCTL
+
+/* Define to 1 if you have jpeg6b */
+#undef HAVE_IMAGE_JPEG
+
+/* Define to 1 if you have libpng12 */
+#undef HAVE_IMAGE_PNG
+
+/* Define to 1 if you libXpm */
+#undef HAVE_IMAGE_XPM
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have kstat */
+#undef HAVE_KSTAT
+
+/* Define to 1 if you have libstartup-notification libraries */
+#undef HAVE_LIBSTARTUP_NOTIFICATION
+
+/* Define to 1 if you have libXpm */
+#undef HAVE_LIBXPM
+
+/* Define to 1 if you have the <limits> header file. */
+#undef HAVE_LIMITS
+
+/* Define to 1 if you have localtime_r() */
+#undef HAVE_LOCALTIME_R
+
+/* Define to 1 if you have pselect() */
+#undef HAVE_PSELECT
+
+/* Define if you have POSIX threads libraries and header files. */
+#undef HAVE_PTHREAD
+
+/* Define to 1 if you the setenv systam call */
+#undef HAVE_SETENV
+
+/* Define to 1 if you have setgroups() */
+#undef HAVE_SETGROUPS
+
+/* Define to 1 if you have XShape extension */
+#undef HAVE_SHAPE
+
+/* Define to 1 if you have the <slist> header file. */
+#undef HAVE_SLIST
+
+/* Define to 1 if you have statfs */
+#undef HAVE_STATFS
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have strcasecmp() */
+#undef HAVE_STRCASECMP
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have swprintf */
+#undef HAVE_SWPRINTF
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if your system defines timersub. */
+#undef HAVE_TIMERSUB
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you the unsetenv systam call */
+#undef HAVE_UNSETENV
+
+/* Define to 1 if you have wcsncmp() */
+#undef HAVE_WCSNCMP
+
+/* Define to 1 if you want Xft2 font support */
+#undef HAVE_XFT
+
+/* Define to 1 if you want Xinerama support to be */
+#undef HAVE_XINERAMA
+
+/* Define to 1 if you have XKB extension */
+#undef HAVE_XKBRULES
+
+/* Define to 1 if you have an XRANDR capable server */
+#undef HAVE_XRANDR
+
+/* Define if iconv() have second parameter const */
+#undef ICONV_CONST
+
+/* Define to 1 to compile in support for opacity hinting */
+#undef OPACITY
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Default installation place */
+#undef PREFIX
+
+/* Define to necessary symbol if this constant uses a non-standard name on
+   your system. */
+#undef PTHREAD_CREATE_JOINABLE
+
+/* Name of namespace slist is in */
+#undef SLIST_NAMESPACE
+
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
+#undef STDC_HEADERS
+
+/* Define to 1 if your va_list is array */
+#undef VA_LIST_IS_ARRAY
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING

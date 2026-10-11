@@ -1,0 +1,140 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-11 09:53+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:90
+msgid "Report title is missing"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:95
+msgid "Email address is missing"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:101
+msgid "Detail problem description is missing"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:107
+msgid ""
+"Email address is invalid. Please use the valid email address so developers "
+"can contact you in case more details are needed"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:141
+msgid ""
+"ede-bug-report was compiled without cURL support.\n"
+"You can install cURL either via your distribution package management system, "
+"or download it from http://curl.haxx.se. After this, you'll have to "
+"recompile ede-bug-report again"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:154
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:159
+msgid "EDE Bug Reporting Tool"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:164
+msgid ""
+"To help us to improve the future EDE versions, please describe the problem "
+"with much details as possible.\n"
+"\n"
+"Note: valid email address is required, so developers can contact you for "
+"more informations if necessary."
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:170
+msgid "Short and descriptive title:"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:173
+msgid "Your email address:"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:176
+msgid "Detail description of the problem:"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:192
+msgid "Receive notifications"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:193
+msgid ""
+"Receive notifications when developers updates or comments this issue. You "
+"have to create EDE Bugzilla account first to get notifications."
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:199
+msgid "&Send"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/ede-bug-report.cpp:202
+msgid "&Close"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:157
+msgid "The report was sent successfully. Thank you for your contribution"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:176
+msgid ""
+"Unable to properly login. Probably the host is temporarily down or your are "
+"not connected to the internet"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:192
+msgid "Submitting the report..."
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:205
+msgid ""
+"Unable to send the data. Either your email address is not registered on EDE "
+"Tracker or the host is temporarily down"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:209
+msgid "Logging out..."
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:241
+msgid "Unable to create additional thread"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:255
+msgid "Unable to initialize communication pipe"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:266
+msgid "Unable to initialize bugzilla interface!"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:273
+msgid "Sending report data"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:275
+msgid "Sending report..."
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:278
+msgid "&Cancel"
+msgstr ""
+
+#: ede-bug-tools/ede-bug-report/BugzillaSender.cpp:285
+msgid "Preparing data..."
+msgstr ""
