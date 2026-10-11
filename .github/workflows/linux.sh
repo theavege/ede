@@ -85,37 +85,42 @@ fi
 fltk-config --version
 
 cd "$ROOT/external/edelib"
+
+# Trim edelib's top-level Jamfile so 'jam install' builds ONLY what EDE
+# needs: the library headers/sources (edelib, src, sslib) and the pkg-config
+# files (pc). The other sub-includes (test, examples, doc, tools, po) drag
+# in programs/tests/docs/locale that fail to link or require extra host
+# tools, and they also trigger a Jam scoping quirk where install targets
+# resolve against the wrong project scope ("don't know how to make ...").
+# Commenting those SubInclude lines is done with sed right here instead of
+# patching the upstream submodule, keeping the PR diff minimal. A grep
+# guard makes the step idempotent and fails loudly if the Jamfile layout
+# ever changes so this patch stops applying silently.
+for d in test examples doc tools po; do
+  grep -q "^SubInclude TOP ${d} ;$" Jamfile || {
+    echo "error: unexpected edelib Jamfile layout (no active SubInclude TOP ${d})" >&2
+    exit 1
+  }
+  sed -i "s|^SubInclude TOP ${d} ;|#SubInclude TOP ${d} ;|" Jamfile
+done
+
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
 
-# Workaround for a quirk in edelib's Jamfiles: the tool programs
-# (edelib-script, edelib-dbus-explorer, edelib-update-font-cache) are
-# declared inside their own SubDir scopes, but InstallProgram records them
-# under the parent project name ("tools"). On the very first invocation of
-# 'jam install' these pseudo-targets are unresolvable ("don't know how to
-# make <tools!edelib-script>edelib-script") and Jam exits with status 1,
-# even though everything else installs fine. Building the tool targets by
-# their bare names first materialises them, after which 'jam install'
-# succeeds on the first try. The loop is defensive: if a target is not
-# defined by this configuration (e.g. dbus-explorer without D-Bus), we
-# skip it instead of failing the CI job.
-for t in \
-  lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a \
-  edelib-script edelib-dbus-explorer edelib-update-font-cache
-do
-  if ! jam -j"$(nproc)" "$t"; then
+# Build the libraries explicitly first. Even with the trimmed Jamfile,
+# a clean tree needs the archive targets materialised before the install
+# pass can copy them into ${PREFIX}; each name is conditional because
+# optional components (dbus) depend on what configure detected.
+for t in lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a; do
+  if ! jam -q -j"$(nproc)" "$t"; then
     echo "warning: target '$t' not buildable in this configuration, skipping"
   fi
 done
 
-# Now that all buildable targets exist, 'jam install' completes cleanly.
-# Note: Perforce Jam can still exit non-zero (or silently skip targets,
-# printing "...skipped N target(s)...") depending on version/configuration,
-# so never trust the exit status alone — verify the installed artifacts
-# below instead. Run install twice: the first pass may hit the same
-# unresolved-target issue if anything was missed above; the second pass is
-# a no-op that simply confirms stability.
-jam -j"$(nproc)" install || jam -j"$(nproc)" install
+# -q makes Jam stop on the first error, so 'jam install' now fails loudly
+# if anything required is missing (the old script had to re-run install and
+# hand-verify artifacts because silent skips were possible).
+jam -q -j"$(nproc)" install
 
 # Fail loudly if anything important was skipped or missing.
 test -f "${PREFIX}/lib/libedelib.a"
