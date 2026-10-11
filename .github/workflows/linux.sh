@@ -110,11 +110,51 @@ fi
 
 cd "$ROOT"
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+
+# Workaround for broken pkg-config files shipped by this edelib revision:
+# they contain 'libdir=${libdir}' / 'includedir=${prefix}/include' style
+# variables where ${libdir} (and friends) are never defined, so
+# 'pkg-config --libs edelib' emits a bare '-L' with no argument. EDE's
+# configure copies those flags into Jamconfig verbatim and every link
+# then fails with "cannot find -ledelib". The libraries are installed in
+# "${PREFIX}/lib", so normalize the .pc files before configuring EDE.
+for pc in "${PREFIX}"/lib/pkgconfig/edelib*.pc; do
+  [ -f "$pc" ] || continue
+  sed -i \
+    -e 's|^\(libdir=\)${libdir}$|\1${exec_prefix}/lib|' \
+    -e 's|^\(includedir=\)${includedir}$|\1${prefix}/include|' \
+    "$pc"
+done
+# Sanity check: pkg-config must not emit an argument-less -L anymore.
+if pkg-config --libs edelib | grep -qE '(^| )-L( |$)'; then
+  echo "error: edelib.pc still produces a bare -L flag" >&2
+  pkg-config --libs edelib >&2
+  exit 1
+fi
+
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --enable-debug --with-edelib-path="${PREFIX}"
 # Doc rules call asciidoc whenever PYTHON is set. This job checks
 # that the desktop compiles; it does not install asciidoc.
 sed -i 's/^PYTHON.*/PYTHON = ;/' Jamconfig
+
+# Another upstream quirk: ede-calc calls exp()/pow() but its link line
+# (FLTK + libstdc++) has no libm, so linking fails on modern glibc with
+# "undefined reference to symbol 'exp@@GLIBC_2.29'" ("DSO missing from
+# command line"). Patch the Jamfile of every program that uses math
+# functions to append -lm explicitly. Use jam's "+=" operator: per-target
+# assignment with $(VAR) self-reference does not expand reliably here,
+# but "+=" appends to whatever the rule set for the target.
+for d in ede-calc; do
+  sed -i -E "s|^(FltkProgramBare ${d} : .*)\$|\1\nLINKLIBS on ${d} += -lm ;|" "$d/Jamfile"
+done
+
 jam -j"$(nproc)"
 jam install
+
+# Verify the programs that need extra libraries really linked: the binary
+# must exist and be dynamically linked against libm.
+test -x "${PREFIX}/bin/ede-calc"
+ldd "${PREFIX}/bin/ede-calc" | grep -q 'libm\.so'
+
 find "${PREFIX}/bin" -maxdepth 1 -type f -printf '%f\n' | sort
