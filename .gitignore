@@ -1,1 +1,10 @@
 *.so
+.prefix/
+build/
+*.o
+autom4te.cache/
+config.h
+config.log
+config.status
+Makefile
+configure~
