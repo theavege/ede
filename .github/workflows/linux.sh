@@ -68,11 +68,9 @@ fltk-config --version
 cd "$ROOT/external/edelib"
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
-jam -j"$(nproc)"
-# `jam tests` does `cd tests` for the default static build, but the
-# directory is `test/`. Run the driver directly.
-( cd test && ./run-all.sh )
-jam install
+# `jam` with no target also builds tests and examples. They fail to link
+# (undefined edelib::* symbols) and EDE does not need them. Install the library.
+jam -j"$(nproc)" install
 test -f "${PREFIX}/lib/pkgconfig/edelib.pc"
 test -f "${PREFIX}/lib/pkgconfig/edelib-gui.pc"
 
