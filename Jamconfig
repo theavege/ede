@@ -1,0 +1,153 @@
+#
+# $Id$
+#
+# Part of Equinox Desktop Environment (EDE).
+# Copyright (c) 2000-2007 EDE Authors.
+#
+# This program is licensed under terms of the 
+# GNU General Public License version 2 or newer.
+# See COPYING for details.
+
+# directories
+prefix      ?= "/workspace/.prefix" ;
+exec_prefix ?= "$(prefix)" ;
+datarootdir ?= "$(prefix)/share" ;
+bindir      ?= "$(exec_prefix)/bin" ;
+datadir     ?= "$(datarootdir)" ;
+docdir      ?= "$(datarootdir)/doc" ;
+includedir  ?= "$(prefix)/include" ;
+libdir      ?= "$(exec_prefix)/lib" ;
+mandir      ?= "$(datarootdir)/man" ;
+srcdir      ?= "/workspace" ;
+sysconfdir  ?= "$(prefix)/etc" ;
+
+# compiler
+CC           = gcc ;
+C++          = g++ ;
+LINK         = $(CC) ;
+
+# tools used by jam rules
+XGETTEXT     ?= /usr/bin/xgettext ;
+MSGFMT       ?= /usr/bin/msgfmt ;
+PYTHON = ;
+RMDIR_UNSAFE ?= $(RM) -Rf ;
+RMDIR_SAFE   ?= rmdir ;
+CP           ?= cp ;
+COPYDIR      ?= "cp -R" ;
+MV           ?= mv ;
+MKDIRS       ?= "mkdir -p" ;
+LINKCMD      ?= "ln -s" ;
+
+EDE_VERSION ?= "2.2.0" ;
+
+# subdirectory in usual XDG paths; this directory is marked
+# as 'prefix' in some edelib classes, like Resource or Theme
+EDE_PREFIX_SUBDIR ?= "ede" ;
+
+# directories used by build system
+PREFIX                ?= "$(prefix)" ;
+EDE_BIN_DIR           ?= "$(bindir)" ;
+EDE_DATA_DIR          ?= "$(datadir)" ;
+EDE_CONFIG_DIR        ?= "$(sysconfdir)/xdg/$(EDE_PREFIX_SUBDIR)" ;
+EDE_MENU_DIR          ?= "$(sysconfdir)/xdg/menus" ; # use XDG default for menu dir
+EDE_ICON_DIR          ?= "$(EDE_DATA_DIR)/icons" ;
+EDE_MIME_DIR          ?= "$(EDE_DATA_DIR)/mime" ; # use XDG mime path
+EDE_WALLPAPERS_DIR    ?= "$(EDE_DATA_DIR)/wallpapers" ; # default path
+EDE_DOC_DIR           ?= "$(docdir)/ede-$(EDE_VERSION)" ;
+EDE_THEMES_DIR        ?= "$(EDE_DATA_DIR)/$(EDE_PREFIX_SUBDIR)/themes" ;
+EDE_TIPS_DIR          ?= "$(EDE_DATA_DIR)/$(EDE_PREFIX_SUBDIR)/tips" ;
+EDE_PANEL_APPLETS_DIR ?= "$(EDE_DATA_DIR)/$(EDE_PREFIX_SUBDIR)/panel-applets" ;
+
+DBUS_SERVICE_DIR      ?= "$(datarootdir)/dbus-1/services" ;
+XSESSIONS_DIR         ?= "$(datarootdir)/xsessions" ;
+
+PEKWM_CONFIG_DIR      ?= "$(sysconfdir)/pekwm" ;
+PEKWM_DATA_DIR        ?= "$(datadir)/pekwm" ;
+PEKWM_CXXFLAGS        ?= "   -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/libpng16" ;
+PEKWM_LIBS            ?= "  -lX11 -lXext   -lXinerama -lXft -lXrandr -lXpm -ljpeg -lpng16" ;
+
+OPTIMFLAGS     ?=  ;
+DEBUGFLAGS     ?=  -g3 -D_DEBUG -DDEBUG ;
+LARGEFILEFLAGS ?=  ;
+
+# FIXME: a quick hack to work everything on SunStudio
+if $(SUN_COMPILER) {
+	WALL          ?= "+w2" ;
+	PEDANTIC      ?= ;
+	WNO_LONG_LONG ?= ;
+} else {
+	# gcc assumed
+	WALL          ?= "-Wall" ;
+	# by default we do not use -pedantic; programs that use C libraries (HAL older versions) and eFLTK will fail 
+	# to compile with it
+	PEDANTIC      ?= ;
+	WNO_LONG_LONG ?= "-Wno-long-long" ;
+}
+
+# global flags used to be passed to every target
+GLOBALFLAGS ?= $(WALL) $(PEDANTIC) -DHAVE_CONFIG_H -I$(TOP) $(OPTIMFLAGS) $(DEBUGFLAGS) $(LARGEFILEFLAGS) ;
+STDLIB      ?= -lstdc++ ;
+LIBM        ?= -lm ;
+
+# Note that REMOVE_UNUSED_DEPENDENCIES_TRICK _does not_ works when
+# edelib is compiled as shared library (or when is linked with some shared library)
+#REMOVE_UNUSED_DEPENDENCIES_TRICK = 1 ;
+
+# edelib libraries path
+EDELIBINCLUDE                ?= -I/workspace/.prefix/include ;
+EDELIBLIB                    ?= -L -ledelib ;
+EDELIB_GUI_INCLUDE           ?= -I/workspace/.prefix/include -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 ;
+EDELIB_GUI_LIB               ?= -L -ledelib_gui -lfltk_images -lfltk -lX11 -lXpm -ledelib ;
+EDELIB_GUI_NO_IMAGES_INCLUDE ?= -I/workspace/.prefix/include -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 ;
+EDELIB_GUI_NO_IMAGES_LIB     ?= -L -ledelib_gui -lfltk -lX11 -lXpm -ledelib ;
+EDELIB_DBUS_INCLUDE          ?= -I/workspace/.prefix/include -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include ;
+EDELIB_DBUS_LIB              ?= -L -ledelib_dbus -ledelib -ldbus-1 ;
+
+# fltk libraries path
+FLTKINCLUDE      ?= -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16  ;
+FLTKLIB          ?= -lfltk_images -lfltk -lX11 -lXpm ;
+FLTKLIB_NOIMAGES ?= -lfltk -lX11 -lXpm ;
+
+# Xcomposite
+COMPOSITEINCLUDE ?=  ;
+COMPOSITELIB     ?= -lXcomposite -lXdamage -lXfixes -lXext ;
+
+# HAL
+HALINCLUDE ?=  ;
+HALLIB     ?=  ;
+
+# startup-notification
+STARTUP_NOTIFICATION_INCLUDE ?= -I/usr/include/startup-notification-1.0 ;
+STARTUP_NOTIFICATION_LIB     ?= -lstartup-notification-1 ;
+
+# X libraries (could be empty if are on standard paths)
+X_CFLAGS     ?=  ;
+X_LIBS       ?=  ;
+X_PRE_LIBS   ?=  ;
+X_EXTRA_LIBS ?=  ;
+
+# solo XKB extension library
+XKB_LIBS ?=  -lxkbfile ;
+
+# shape extension
+XSHAPE_LIBS ?= -lXext ;
+
+# curl libraries
+CURL_CFLAGS  ?=  ;
+CURL_LIBS    ?= -lcurl ;
+
+# kstat
+KSTAT_LIBS ?=  ;
+
+# platform specific pthread flags
+# FIXME: a quick hack to work everything on SunStudio
+if $(SUN_COMPILER) {
+	PTHREAD_CFLAGS ?= ;
+	PTHREAD_LIBS   ?= -lpthread ;
+} else {
+	PTHREAD_CFLAGS ?=  ;
+	PTHREAD_LIBS   ?=  ;
+}
+
+# do not touch this
+JAMCONFIG_READ = "yes" ;

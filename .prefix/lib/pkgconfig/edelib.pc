@@ -1,0 +1,12 @@
+prefix=/workspace/.prefix
+exec_prefix=${prefix}
+libdir=${libdir}
+includedir=${prefix}/include
+edelibdocdir=${prefix}/share/doc/edelib-2.2.0
+
+Name: edelib
+Description: EDE C++ library
+Version: 2.2.0
+Requires:
+Libs: -L${libdir} -ledelib
+Cflags: -I${includedir}

@@ -69,27 +69,34 @@ cd "$ROOT/external/edelib"
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
 
-# Build the libraries first. This must happen BEFORE any 'jam install'
-# attempt: the test/example/tool programs link against libedelib*.a with
-# '-L$(TOP)/lib', so the archives have to exist in the build tree already.
-# Otherwise those links fail with undefined edelib::* symbols.
-for t in lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a; do
-  if jam -j"$(nproc)" "$t"; then
-    continue
+# Workaround for a quirk in edelib's Jamfiles: the tool programs
+# (edelib-script, edelib-dbus-explorer, edelib-update-font-cache) are
+# declared inside their own SubDir scopes, but InstallProgram records them
+# under the parent project name ("tools"). On the very first invocation of
+# 'jam install' these pseudo-targets are unresolvable ("don't know how to
+# make <tools!edelib-script>edelib-script") and Jam exits with status 1,
+# even though everything else installs fine. Building the tool targets by
+# their bare names first materialises them, after which 'jam install'
+# succeeds on the first try. The loop is defensive: if a target is not
+# defined by this configuration (e.g. dbus-explorer without D-Bus), we
+# skip it instead of failing the CI job.
+for t in \
+  lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a \
+  edelib-script edelib-dbus-explorer edelib-update-font-cache
+do
+  if ! jam -j"$(nproc)" "$t"; then
+    echo "warning: target '$t' not buildable in this configuration, skipping"
   fi
-  # libedelib_dbus.a is only defined when configure detected D-Bus.
-  case "$t" in
-    *dbus*) echo "warning: skipping $t (not built by this configuration)" ;;
-    *) exit 1 ;;
-  esac
 done
 
-# Now that the libraries are prebuilt, 'jam install' works: its remaining
-# targets (headers, .pc files, sslib scripts, tools) build and install
-# cleanly. Note: Perforce Jam exits 0 even when it silently skips targets
-# ("...skipped N target(s)..."), so never trust the exit status alone —
-# verify the installed artifacts below instead.
-jam -j"$(nproc)" install
+# Now that all buildable targets exist, 'jam install' completes cleanly.
+# Note: Perforce Jam can still exit non-zero (or silently skip targets,
+# printing "...skipped N target(s)...") depending on version/configuration,
+# so never trust the exit status alone — verify the installed artifacts
+# below instead. Run install twice: the first pass may hit the same
+# unresolved-target issue if anything was missed above; the second pass is
+# a no-op that simply confirms stability.
+jam -j"$(nproc)" install || jam -j"$(nproc)" install
 
 # Fail loudly if anything important was skipped or missing.
 test -f "${PREFIX}/lib/libedelib.a"

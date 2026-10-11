@@ -1,0 +1,11 @@
+prefix=/workspace/.prefix
+exec_prefix=${prefix}
+libdir=${libdir}
+includedir=${prefix}/include
+
+Name: edelib-gui
+Description: EDE GUI library
+Version: 2.2.0
+Requires: edelib
+Libs: -L${libdir} -ledelib_gui -lfltk_images -lfltk -lX11 -lXpm 
+Cflags: -I${includedir} -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/cairo -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16 
