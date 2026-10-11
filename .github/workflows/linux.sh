@@ -111,23 +111,26 @@ fi
 cd "$ROOT"
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
 
-# Workaround for broken pkg-config files shipped by this edelib revision:
-# they contain 'libdir=${libdir}' / 'includedir=${prefix}/include' style
-# variables where ${libdir} (and friends) are never defined, so
-# 'pkg-config --libs edelib' emits a bare '-L' with no argument. EDE's
-# configure copies those flags into Jamconfig verbatim and every link
-# then fails with "cannot find -ledelib". The libraries are installed in
-# "${PREFIX}/lib", so normalize the .pc files before configuring EDE.
+# Guard against broken pkg-config files: if an edelib revision ships .pc
+# templates containing 'libdir=${libdir}' (a variable that is never defined
+# inside a pkg-config file), 'pkg-config --libs edelib' emits a bare '-L'
+# with no argument. EDE's configure copies those flags into Jamconfig
+# verbatim and every link then fails with "cannot find -ledelib". The
+# submodule pin (external/edelib) includes the upstream fix, so normally
+# nothing needs rewriting here; we only repair installed .pc files if the
+# broken pattern ever reappears, and fail loudly if it cannot be repaired.
 for pc in "${PREFIX}"/lib/pkgconfig/edelib*.pc; do
   [ -f "$pc" ] || continue
+  grep -q '^libdir=${libdir}$' "$pc" || continue
+  echo "warning: $pc has an undefined libdir variable; repairing in place" >&2
   sed -i \
     -e 's|^\(libdir=\)${libdir}$|\1${exec_prefix}/lib|' \
     -e 's|^\(includedir=\)${includedir}$|\1${prefix}/include|' \
     "$pc"
 done
-# Sanity check: pkg-config must not emit an argument-less -L anymore.
+# Sanity check: pkg-config must not emit an argument-less -L.
 if pkg-config --libs edelib | grep -qE '(^| )-L( |$)'; then
-  echo "error: edelib.pc still produces a bare -L flag" >&2
+  echo "error: edelib pkg-config files produce a bare -L flag" >&2
   pkg-config --libs edelib >&2
   exit 1
 fi
