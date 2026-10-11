@@ -51,3 +51,6 @@ services/org.equinoxproject.Launch.service
 /evoke/evoke
 /evoke/ede-shutdown
 /pekwm/pekwm
+
+# Generated gettext templates (any depth)
+**/locale/messages.pot
