@@ -68,10 +68,11 @@ fltk-config --version
 cd "$ROOT/external/edelib"
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
-# Do not run plain `jam install`: it also builds tests and examples, which
-# fail to link (undefined edelib::* symbols). It can also silently skip
-# targets ("don't know how to make ...") while still installing pkg-config
-# files, so we explicitly build every artifact EDE needs, then install.
+
+# Build the libraries first. This must happen BEFORE any 'jam install'
+# attempt: the test/example/tool programs link against libedelib*.a with
+# '-L$(TOP)/lib', so the archives have to exist in the build tree already.
+# Otherwise those links fail with undefined edelib::* symbols.
 for t in lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a; do
   if jam -j"$(nproc)" "$t"; then
     continue
@@ -82,11 +83,23 @@ for t in lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a; do
     *) exit 1 ;;
   esac
 done
+
+# Now that the libraries are prebuilt, 'jam install' works: its remaining
+# targets (headers, .pc files, sslib scripts, tools) build and install
+# cleanly. Note: Perforce Jam exits 0 even when it silently skips targets
+# ("...skipped N target(s)..."), so never trust the exit status alone —
+# verify the installed artifacts below instead.
 jam -j"$(nproc)" install
+
+# Fail loudly if anything important was skipped or missing.
 test -f "${PREFIX}/lib/libedelib.a"
 test -f "${PREFIX}/lib/libedelib_gui.a"
 test -f "${PREFIX}/lib/pkgconfig/edelib.pc"
 test -f "${PREFIX}/lib/pkgconfig/edelib-gui.pc"
+if [ -f pc/edelib-dbus.pc ]; then
+  test -f "${PREFIX}/lib/libedelib_dbus.a"
+  test -f "${PREFIX}/lib/pkgconfig/edelib-dbus.pc"
+fi
 
 cd "$ROOT"
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
