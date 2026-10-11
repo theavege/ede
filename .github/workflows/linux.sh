@@ -41,17 +41,21 @@ if jam -v 2>&1 | grep -Eiq 'boost|Boost\.Jam'; then
   exit 1
 fi
 
-# Do not pipe jam into head: with pipefail, head's SIGPIPE makes the probe fail
-# even when Jam printed a good version.
+# -f replaces the built-in Jambase. Echo prints JAMVERSION during parse, then
+# Jam exits 1 because it still tries to build. m4/jam.m4 ignores that status.
 printf 'Echo $(JAMVERSION) ;\n' > /tmp/conftest.jam
-jam -f /tmp/conftest.jam > /tmp/jamver.out
-jam_version_orig=$(head -1 /tmp/jamver.out)
+jam -f /tmp/conftest.jam > /tmp/jamver.out 2>/tmp/jamver.err || true
+jam_version_orig=$(head -1 /tmp/jamver.out || true)
 jam_version_orig=${jam_version_orig//[[:space:]]/}
 jam_version=${jam_version_orig//./}
 echo "JAMVERSION=$jam_version_orig (numeric $jam_version)"
 case "$jam_version" in
   ''|*[!0-9]*)
-    echo "configure requires a numeric Jam version (vanilla Jam or FTJam). Got: $jam_version_orig"
+    echo "configure requires a numeric Jam version (vanilla Jam or FTJam). Got: '$jam_version_orig'"
+    echo "---- jam stdout ----"
+    cat /tmp/jamver.out || true
+    echo "---- jam stderr ----"
+    cat /tmp/jamver.err || true
     exit 1
     ;;
 esac
