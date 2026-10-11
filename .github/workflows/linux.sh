@@ -7,6 +7,23 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 : "${PREFIX:=$ROOT/.prefix}"
 
+# When the actions/cache step restored a complete edelib installation,
+# skip the whole edelib build. The key includes the exact submodule
+# commit and linux.sh, so a hit means these artifacts were produced by
+# this same script on this same source revision. Verify the critical
+# files exist before trusting the cache; if anything is missing we fall
+# through to a normal (incremental) build below.
+if test -f "${PREFIX}/lib/libedelib.a" \
+   && test -f "${PREFIX}/lib/libedelib_gui.a" \
+   && test -f "${PREFIX}/lib/pkgconfig/edelib.pc" \
+   && test -f "${PREFIX}/lib/pkgconfig/edelib-gui.pc"; then
+  echo "::notice::edelib found in cache (${PREFIX}); skipping autogen/configure/jam install."
+  EDELIB_CACHED=yes
+else
+  EDELIB_CACHED=no
+fi
+
+if [ "$EDELIB_CACHED" = no ]; then
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
   autoconf \
@@ -34,6 +51,8 @@ sudo apt-get install -y --no-install-recommends \
   libstartup-notification0-dev \
   libcurl4-openssl-dev
 
+# Toolchain checks (jam version, fltk-config) only matter when we are
+# about to compile; on a full cache hit they are skipped as well.
 command -v jam
 jam -v
 if jam -v 2>&1 | grep -Eiq 'boost|Boost\.Jam'; then
@@ -107,6 +126,7 @@ if [ -f pc/edelib-dbus.pc ]; then
   test -f "${PREFIX}/lib/libedelib_dbus.a"
   test -f "${PREFIX}/lib/pkgconfig/edelib-dbus.pc"
 fi
+fi   # end of: if [ "$EDELIB_CACHED" = no ]
 
 cd "$ROOT"
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
