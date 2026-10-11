@@ -68,9 +68,23 @@ fltk-config --version
 cd "$ROOT/external/edelib"
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
-# `jam` with no target also builds tests and examples. They fail to link
-# (undefined edelib::* symbols) and EDE does not need them. Install the library.
+# Do not run plain `jam install`: it also builds tests and examples, which
+# fail to link (undefined edelib::* symbols). It can also silently skip
+# targets ("don't know how to make ...") while still installing pkg-config
+# files, so we explicitly build every artifact EDE needs, then install.
+for t in lib/libedelib.a lib/libedelib_gui.a lib/libedelib_dbus.a; do
+  if jam -j"$(nproc)" "$t"; then
+    continue
+  fi
+  # libedelib_dbus.a is only defined when configure detected D-Bus.
+  case "$t" in
+    *dbus*) echo "warning: skipping $t (not built by this configuration)" ;;
+    *) exit 1 ;;
+  esac
+done
 jam -j"$(nproc)" install
+test -f "${PREFIX}/lib/libedelib.a"
+test -f "${PREFIX}/lib/libedelib_gui.a"
 test -f "${PREFIX}/lib/pkgconfig/edelib.pc"
 test -f "${PREFIX}/lib/pkgconfig/edelib-gui.pc"
 
