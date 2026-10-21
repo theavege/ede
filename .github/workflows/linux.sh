@@ -66,10 +66,13 @@ fi
 fltk-config --version
 
 cd "$ROOT/external/edelib"
+# Perforce Jam does not grist Library/Main targets. Install looks them up
+# with SOURCE_GRIST, so teach Jamrules those names before configure.
+patch -p1 < "$ROOT/.github/patches/edelib-perforce-jam.patch"
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
-# `jam` with no target also builds tests and examples. They fail to link
-# (undefined edelib::* symbols) and EDE does not need them. Install the library.
+# Archives first: the installed tools link -ledelib and do not depend on it.
+jam -j"$(nproc)" lib
 jam -j"$(nproc)" install
 test -f "${PREFIX}/lib/pkgconfig/edelib.pc"
 test -f "${PREFIX}/lib/pkgconfig/edelib-gui.pc"
