@@ -64,3 +64,51 @@ index 228203b..e0fd5cc 100644
  }
  
  # MakeInstallPrivate <location-dir> : <targets> : <opt-file-mode> : <opt-chown> : <opt-chgrp> : <opt-name> ;
+diff --git a/pc/edelib-dbus.pc.in b/pc/edelib-dbus.pc.in
+index c75f760..0ce8f10 100644
+--- a/pc/edelib-dbus.pc.in
++++ b/pc/edelib-dbus.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=${prefix}
+-libdir=${libdir}
++libdir=@libdir@
+ includedir=${prefix}/include
+ 
+ Name: edelib-dbus
+diff --git a/pc/edelib-gui-no-images.pc.in b/pc/edelib-gui-no-images.pc.in
+index 0e4b031..94534da 100644
+--- a/pc/edelib-gui-no-images.pc.in
++++ b/pc/edelib-gui-no-images.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=${prefix}
+-libdir=${libdir}
++libdir=@libdir@
+ includedir=${prefix}/include
+ 
+ Name: edelib-gui
+diff --git a/pc/edelib-gui.pc.in b/pc/edelib-gui.pc.in
+index faa8118..39c222c 100644
+--- a/pc/edelib-gui.pc.in
++++ b/pc/edelib-gui.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=${prefix}
+-libdir=${libdir}
++libdir=@libdir@
+ includedir=${prefix}/include
+ 
+ Name: edelib-gui
+diff --git a/pc/edelib.pc.in b/pc/edelib.pc.in
+index 17e5d9e..866e02f 100644
+--- a/pc/edelib.pc.in
++++ b/pc/edelib.pc.in
+@@ -1,6 +1,6 @@
+ prefix=@prefix@
+ exec_prefix=${prefix}
+-libdir=${libdir}
++libdir=@libdir@
+ includedir=${prefix}/include
+ edelibdocdir=${prefix}/share/doc/edelib-@EDELIB_API_VERSION@
+ 

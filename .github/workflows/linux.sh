@@ -66,8 +66,9 @@ fi
 fltk-config --version
 
 cd "$ROOT/external/edelib"
-# Perforce Jam does not grist Library/Main targets. Install looks them up
-# with SOURCE_GRIST, so teach Jamrules those names before configure.
+# Perforce Jam does not grist Library/Main targets, and the .pc files
+# set libdir=${libdir}, which pkg-config expands to an empty -L.
+# The patch fixes both before configure.
 patch -p1 < "$ROOT/.github/patches/edelib-perforce-jam.patch"
 ./autogen.sh
 ./configure --prefix="${PREFIX}" --libdir="${PREFIX}/lib" --enable-debug
